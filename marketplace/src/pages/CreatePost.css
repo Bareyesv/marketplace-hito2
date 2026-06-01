@@ -1,5 +1,20 @@
 .create-post {}
 
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--color-text-3);
+  margin-bottom: var(--space-xs);
+  padding: 0;
+  transition: var(--transition);
+}
+.back-link:hover { color: var(--color-text); }
+
 .create-header {
   display: flex;
   justify-content: space-between;

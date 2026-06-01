@@ -35,6 +35,8 @@ export const ACTIONS = {
   REMOVE_FROM_CART: 'REMOVE_FROM_CART',
   UPDATE_CART_QTY: 'UPDATE_CART_QTY',
   CLEAR_CART: 'CLEAR_CART',
+  UPDATE_POST: 'UPDATE_POST',
+  DELETE_POST: 'DELETE_POST',
 }
 
 // =====================
@@ -110,6 +112,13 @@ function appReducer(state, action) {
     }
     case ACTIONS.CLEAR_CART:
       return { ...state, cartItems: [] }
+    case ACTIONS.UPDATE_POST:
+      return {
+        ...state,
+        posts: state.posts.map(p => p.id === action.payload.id ? action.payload : p),
+      }
+    case ACTIONS.DELETE_POST:
+      return { ...state, posts: state.posts.filter(p => p.id !== action.payload) }
     default:
       return state
   }

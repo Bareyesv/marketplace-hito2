@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useApp, ACTIONS } from '../context/AppContext'
 import { authService, postsService, favoritesService, MOCK_POSTS, MOCK_CATEGORIES } from '../services/api'
 
+
+
 // ========================
 // useProducts Hook
 // ========================
@@ -206,4 +208,55 @@ export function useCreatePost() {
   }
 
   return { createPost, loading, error }
+}
+
+// ========================
+// useEditPost Hook
+// ========================
+export function useEditPost(postId) {
+  const { state, dispatch } = useApp()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const allPosts = state.posts.length ? state.posts : MOCK_POSTS
+  const post = allPosts.find(p => p.id === Number(postId)) || null
+
+  const updatePost = async (formData) => {
+    setLoading(true)
+    setError(null)
+    const updated = { ...post, ...formData, precio: Number(formData.precio), category_id: Number(formData.category_id) }
+    try {
+      const data = await postsService.update(postId, updated)
+      dispatch({ type: ACTIONS.UPDATE_POST, payload: data })
+    } catch {
+      dispatch({ type: ACTIONS.UPDATE_POST, payload: updated })
+    } finally {
+      dispatch({ type: ACTIONS.SET_NOTIFICATION, payload: { type: 'success', message: '¡Publicación actualizada exitosamente!' } })
+      navigate('/perfil/publicaciones')
+      setLoading(false)
+    }
+  }
+
+  return { post, updatePost, loading, error }
+}
+
+// ========================
+// useDeletePost Hook
+// ========================
+export function useDeletePost() {
+  const { dispatch } = useApp()
+  const [loadingId, setLoadingId] = useState(null)
+
+  const deletePost = async (postId) => {
+    setLoadingId(postId)
+    try {
+      await postsService.delete(postId)
+    } catch { /* fail silently — delete locally anyway */ }
+    dispatch({ type: ACTIONS.DELETE_POST, payload: postId })
+    dispatch({ type: ACTIONS.SET_NOTIFICATION, payload: { type: 'success', message: 'Publicación eliminada.' } })
+    setLoadingId(null)
+  }
+
+  return { deletePost, loadingId }
 }

@@ -1,0 +1,171 @@
+.my-posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.my-post-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  transition: var(--transition);
+}
+.my-post-row:hover {
+  border-color: var(--color-border-light);
+}
+
+.my-post-image-wrap {
+  width: 80px; height: 80px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.my-post-image {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.my-post-image-wrap:hover .my-post-image { transform: scale(1.06); }
+
+.my-post-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.my-post-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: var(--transition);
+}
+.my-post-title:hover { color: var(--color-primary); }
+
+.my-post-cat { font-size: 0.75rem; }
+
+.my-post-desc {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.my-post-meta {
+  flex-shrink: 0;
+  text-align: right;
+}
+.my-post-price {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* Action buttons */
+.my-post-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 500;
+  border: 1.5px solid transparent;
+  transition: var(--transition);
+  background: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.edit-btn {
+  color: var(--color-text-2);
+  border-color: var(--color-border);
+}
+.edit-btn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: rgba(200, 169, 110, 0.06);
+}
+
+.delete-btn {
+  color: var(--color-text-3);
+  border-color: var(--color-border);
+}
+.delete-btn:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+  background: rgba(232, 93, 117, 0.06);
+}
+
+/* Delete confirm inline */
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: rgba(232, 93, 117, 0.08);
+  border: 1.5px solid rgba(232, 93, 117, 0.3);
+  border-radius: var(--radius-md);
+  padding: 7px 12px;
+  animation: fadeUp 0.15s ease;
+}
+.confirm-icon {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.confirm-text {
+  font-size: 0.82rem;
+  color: var(--color-text-2);
+  white-space: nowrap;
+}
+.confirm-yes, .confirm-no {
+  background: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+}
+.confirm-yes {
+  color: var(--color-error);
+}
+.confirm-yes:hover { background: rgba(232, 93, 117, 0.15); }
+.confirm-no {
+  color: var(--color-text-3);
+}
+.confirm-no:hover { color: var(--color-text); }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .my-post-row {
+    grid-template-columns: 64px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .my-post-meta { display: none; }
+  .my-post-actions {
+    grid-column: 1 / -1;
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--color-border);
+  }
+  .my-post-image-wrap { width: 64px; height: 64px; }
+}
