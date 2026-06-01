@@ -13,6 +13,7 @@ import Profile from './pages/Profile'
 import CreatePost from './pages/CreatePost'
 import MyPosts from './pages/MyPosts'
 import Favorites from './pages/Favorites'
+import Cart from './pages/Cart'
 import NotFound from './pages/NotFound'
 
 // Private Route Guard
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/tienda/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Register />} />
+          <Route path="/carrito" element={<Cart />} />
 
           {/* Private Routes */}
           <Route path="/perfil" element={<PrivateRoute><Profile /></PrivateRoute>} />

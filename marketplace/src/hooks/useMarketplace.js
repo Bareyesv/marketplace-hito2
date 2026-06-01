@@ -132,6 +132,49 @@ export function useFavorites() {
 }
 
 // ========================
+// useCart Hook
+// ========================
+export function useCart() {
+  const { state, dispatch } = useApp()
+
+  const addToCart = (post) => {
+    dispatch({ type: ACTIONS.ADD_TO_CART, payload: post })
+    dispatch({
+      type: ACTIONS.SET_NOTIFICATION,
+      payload: { type: 'success', message: `"${post.titulo}" agregado al carrito` },
+    })
+  }
+
+  const removeFromCart = (postId) => {
+    dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: postId })
+  }
+
+  const updateQuantity = (postId, quantity) => {
+    dispatch({ type: ACTIONS.UPDATE_CART_QTY, payload: { id: postId, quantity } })
+  }
+
+  const clearCart = () => {
+    dispatch({ type: ACTIONS.CLEAR_CART })
+  }
+
+  const isInCart = (postId) => state.cartItems.some(i => i.id === postId)
+
+  const cartTotal = state.cartItems.reduce((sum, i) => sum + i.precio * i.quantity, 0)
+  const cartCount = state.cartItems.reduce((sum, i) => sum + i.quantity, 0)
+
+  return {
+    cartItems: state.cartItems,
+    cartTotal,
+    cartCount,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    isInCart,
+  }
+}
+
+// ========================
 // useCreatePost Hook
 // ========================
 export function useCreatePost() {

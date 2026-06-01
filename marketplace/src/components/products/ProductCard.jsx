@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { FiHeart } from 'react-icons/fi'
-import { useFavorites } from '../../hooks/useMarketplace'
+import { FiHeart, FiShoppingCart, FiCheck } from 'react-icons/fi'
+import { useFavorites, useCart } from '../../hooks/useMarketplace'
 import './ProductCard.css'
 
 function formatPrice(price) {
@@ -9,7 +9,9 @@ function formatPrice(price) {
 
 export default function ProductCard({ post, style }) {
   const { isFavorite, toggleFavorite } = useFavorites()
+  const { addToCart, isInCart } = useCart()
   const fav = isFavorite(post.id)
+  const inCart = isInCart(post.id)
 
   return (
     <article className="product-card" style={style}>
@@ -43,9 +45,13 @@ export default function ProductCard({ post, style }) {
 
         <div className="card-footer">
           <span className="card-price">{formatPrice(post.precio)}</span>
-          {post.usuario && (
-            <span className="card-author text-muted text-small">por {post.usuario}</span>
-          )}
+          <button
+            className={`card-cart-btn ${inCart ? 'in-cart' : ''}`}
+            onClick={(e) => { e.preventDefault(); addToCart(post) }}
+            aria-label={inCart ? 'Ya en el carrito' : 'Agregar al carrito'}
+          >
+            {inCart ? <FiCheck /> : <FiShoppingCart />}
+          </button>
         </div>
       </div>
     </article>

@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { FiSearch, FiShoppingBag, FiUser, FiLogOut, FiPlusSquare, FiHeart, FiList, FiX, FiMenu } from 'react-icons/fi'
+import { FiSearch, FiShoppingBag, FiUser, FiLogOut, FiPlusSquare, FiHeart, FiList, FiX, FiMenu, FiShoppingCart } from 'react-icons/fi'
 import { useApp, ACTIONS } from '../../context/AppContext'
-import { useAuth } from '../../hooks/useMarketplace'
+import { useAuth, useCart } from '../../hooks/useMarketplace'
 import './Navbar.css'
 
 export default function Navbar() {
   const { state, dispatch } = useApp()
   const { logout } = useAuth()
+  const { cartCount } = useCart()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -61,6 +62,11 @@ export default function Navbar() {
         <nav className={`navbar-links ${mobileOpen ? 'open' : ''}`}>
           <NavLink to="/tienda" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             Tienda
+          </NavLink>
+
+          <NavLink to="/carrito" className="cart-nav-btn" aria-label="Carrito de compras">
+            <FiShoppingCart />
+            {cartCount > 0 && <span className="cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>}
           </NavLink>
 
           {!state.isAuthenticated ? (

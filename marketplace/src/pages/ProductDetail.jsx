@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { FiHeart, FiArrowLeft, FiUser, FiTag, FiShare2 } from 'react-icons/fi'
+import { FiHeart, FiArrowLeft, FiUser, FiTag, FiShare2, FiShoppingCart, FiCheck } from 'react-icons/fi'
 import { useApp, ACTIONS } from '../context/AppContext'
-import { useFavorites } from '../hooks/useMarketplace'
+import { useFavorites, useCart } from '../hooks/useMarketplace'
 import { MOCK_POSTS, MOCK_CATEGORIES } from '../services/api'
 import ProductCard from '../components/products/ProductCard'
 import Button from '../components/common/Button'
@@ -17,6 +17,7 @@ export default function ProductDetail() {
   const navigate = useNavigate()
   const { state } = useApp()
   const { isFavorite, toggleFavorite } = useFavorites()
+  const { addToCart, isInCart } = useCart()
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -124,8 +125,17 @@ export default function ProductDetail() {
               <Button
                 size="lg"
                 fullWidth
+                onClick={() => addToCart(post)}
+                variant={isInCart(post.id) ? 'outline' : 'primary'}
+                icon={isInCart(post.id) ? <FiCheck /> : <FiShoppingCart />}
+              >
+                {isInCart(post.id) ? 'Agregar otra unidad' : 'Agregar al carrito'}
+              </Button>
+              <Button
+                size="lg"
+                fullWidth
+                variant="outline"
                 onClick={() => toggleFavorite(post.id)}
-                variant={fav ? 'outline' : 'primary'}
                 icon={<FiHeart />}
               >
                 {fav ? 'Quitar de favoritos' : 'Marcar como favorito'}
