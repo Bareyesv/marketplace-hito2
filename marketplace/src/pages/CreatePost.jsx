@@ -5,6 +5,7 @@ import { useCreatePost } from '../hooks/useMarketplace'
 import { MOCK_CATEGORIES } from '../services/api'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
+import ImageUploader from '../components/common/ImageUploader'
 import './CreatePost.css'
 
 export default function CreatePost() {
@@ -113,26 +114,11 @@ export default function CreatePost() {
             </div>
           </div>
 
-          <Input
-            label="URL de imagen (opcional)"
-            type="url"
-            placeholder="https://ejemplo.com/imagen.jpg"
-            icon={<FiImage />}
+          <ImageUploader
+            label="Imagen del producto (opcional)"
             value={form.imagen_url}
-            onChange={(e) => {
-              handleChange('imagen_url')(e)
-            }}
+            onChange={(url) => setForm(prev => ({ ...prev, imagen_url: url }))}
           />
-
-          {form.imagen_url && (
-            <div className="image-preview">
-              <img
-                src={form.imagen_url}
-                alt="Preview"
-                onError={e => e.target.style.display = 'none'}
-              />
-            </div>
-          )}
 
           <div className="create-actions">
             <Button type="submit" size="lg" loading={loading} icon={<FiFileText />}>

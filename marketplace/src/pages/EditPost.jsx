@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FiImage, FiTag, FiDollarSign, FiFileText, FiType, FiArrowLeft } from 'react-icons/fi'
+import { FiTag, FiDollarSign, FiFileText, FiType, FiArrowLeft } from 'react-icons/fi'
 import { useApp } from '../context/AppContext'
 import { useEditPost } from '../hooks/useMarketplace'
 import { MOCK_CATEGORIES } from '../services/api'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
+import ImageUploader from '../components/common/ImageUploader'
 import './CreatePost.css'
 
 export default function EditPost() {
@@ -136,24 +137,11 @@ export default function EditPost() {
             </div>
           </div>
 
-          <Input
-            label="URL de imagen (opcional)"
-            type="url"
-            placeholder="https://ejemplo.com/imagen.jpg"
-            icon={<FiImage />}
+          <ImageUploader
+            label="Imagen del producto (opcional)"
             value={form.imagen_url}
-            onChange={handleChange('imagen_url')}
+            onChange={(url) => setForm(prev => ({ ...prev, imagen_url: url }))}
           />
-
-          {form.imagen_url && (
-            <div className="image-preview">
-              <img
-                src={form.imagen_url}
-                alt="Preview"
-                onError={e => e.target.style.display = 'none'}
-              />
-            </div>
-          )}
 
           <div className="create-actions">
             <Button type="submit" size="lg" loading={loading} icon={<FiFileText />}>
