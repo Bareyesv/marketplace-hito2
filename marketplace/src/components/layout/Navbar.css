@@ -282,7 +282,6 @@
 
 /* ─── Mobile overlay ────────────────────────────── */
 .mobile-overlay {
-  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
@@ -293,7 +292,6 @@
 
 /* ─── Mobile drawer ─────────────────────────────── */
 .mobile-drawer {
-  display: none;
   position: fixed;
   top: 72px;
   left: 0; right: 0;
@@ -301,17 +299,17 @@
   background: #111116;
   border-bottom: 1px solid var(--color-border);
   padding: var(--space-lg);
+  display: flex;
   flex-direction: column;
   gap: 4px;
   max-height: calc(100vh - 72px);
   overflow-y: auto;
-  transform: translateY(-8px);
-  opacity: 0;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  animation: drawerSlideDown 0.22s ease;
 }
-.mobile-drawer.open {
-  transform: translateY(0);
-  opacity: 1;
+
+@keyframes drawerSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* User greeting */
@@ -454,22 +452,14 @@
 
 /* ─── Responsive breakpoints ────────────────────── */
 @media (min-width: 769px) {
-  /* Desktop: hide mobile-specific elements */
-  .mobile-bar    { display: none !important; }
-  .mobile-drawer { display: none !important; }
-  .mobile-overlay { display: none !important; }
-  .desktop-only  { display: flex; }
+  .mobile-bar { display: none !important; }
+  .desktop-only { display: flex; }
 }
 
 @media (max-width: 768px) {
-  /* Mobile: show hamburger bar, hide desktop nav */
-  .desktop-only  { display: none !important; }
-  .mobile-bar    { display: flex; }
+  .desktop-only { display: none !important; }
+  .mobile-bar { display: flex; }
   .navbar-search { max-width: 200px; }
-
-  /* Overlay & drawer switch to block/flex so the open class works */
-  .mobile-overlay { display: block; }
-  .mobile-drawer  { display: flex; }
 }
 
 @keyframes fadeIn {
