@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { FiFilter, FiX } from 'react-icons/fi'
 import { useApp, ACTIONS } from '../context/AppContext'
 import { useProducts } from '../hooks/useMarketplace'
@@ -13,8 +13,6 @@ export default function Tienda() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sortBy, setSortBy] = useState('recent')
   const [page, setPage] = useState(1)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const sentinelRef = useRef(null)
 
   const sortedPosts = useMemo(() => (
     [...posts].sort((a, b) => {
@@ -24,39 +22,17 @@ export default function Tienda() {
     })
   ), [posts, sortBy])
 
-  const visiblePosts = sortedPosts.slice(0, page * PAGE_SIZE)
-  const hasMore = visiblePosts.length < sortedPosts.length
-
-  // Reset to page 1 when filters or sort change
-  useEffect(() => { setPage(1) }, [posts, sortBy])
-
-  // IntersectionObserver — load next batch when sentinel enters viewport
-  useEffect(() => {
-    if (!hasMore || loading) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loadingMore) {
-          setLoadingMore(true)
-          // Small delay so skeletons are visible — simulates async fetch
-          setTimeout(() => {
-            setPage(p => p + 1)
-            setLoadingMore(false)
-          }, 500)
-        }
-      },
-      { rootMargin: '150px' }
-    )
-
-    const el = sentinelRef.current
-    if (el) observer.observe(el)
-    return () => { if (el) observer.unobserve(el) }
-  }, [hasMore, loading, loadingMore])
+  const totalPages = Math.ceil(sortedPosts.length / PAGE_SIZE)
+  const visiblePosts = sortedPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const clearFilters = () => {
     dispatch({ type: ACTIONS.SET_CATEGORY, payload: null })
     dispatch({ type: ACTIONS.SET_SEARCH, payload: '' })
+    setPage(1)
   }
+
+  const handleSort = (value) => { setSortBy(value); setPage(1) }
+  const handleCategory = (id) => { dispatch({ type: ACTIONS.SET_CATEGORY, payload: id }); setPage(1) }
 
   const hasFilters = state.selectedCategory || state.searchQuery
 
@@ -72,11 +48,7 @@ export default function Tienda() {
           </p>
         </div>
         <div className="tienda-controls">
-          <select
-            className="sort-select"
-            value={sortBy}
-            onChange={e => setSortBy(e.target.value)}
-          >
+          <select className="sort-select" value={sortBy} onChange={e => handleSort(e.target.value)}>
             <option value="recent">Más recientes</option>
             <option value="price-asc">Precio: menor a mayor</option>
             <option value="price-desc">Precio: mayor a menor</option>
@@ -107,7 +79,7 @@ export default function Tienda() {
             <div className="filter-options">
               <button
                 className={`filter-option ${!state.selectedCategory ? 'active' : ''}`}
-                onClick={() => dispatch({ type: ACTIONS.SET_CATEGORY, payload: null })}
+                onClick={() => handleCategory(null)}
               >
                 Todas las categorías
               </button>
@@ -115,7 +87,7 @@ export default function Tienda() {
                 <button
                   key={cat.id}
                   className={`filter-option ${state.selectedCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => dispatch({ type: ACTIONS.SET_CATEGORY, payload: cat.id })}
+                  onClick={() => handleCategory(cat.id)}
                 >
                   {cat.nombre}
                 </button>
@@ -124,7 +96,6 @@ export default function Tienda() {
           </div>
         </aside>
 
-        {/* Sidebar overlay */}
         {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
 
         {/* Products */}
@@ -146,34 +117,37 @@ export default function Tienda() {
             <>
               <div className="products-grid-shop">
                 {visiblePosts.map((post, i) => (
-                  <ProductCard
-                    key={post.id}
-                    post={post}
-                    style={{ animationDelay: `${(i % PAGE_SIZE) * 0.05}s` }}
-                  />
+                  <ProductCard key={post.id} post={post} style={{ animationDelay: `${i * 0.05}s` }} />
                 ))}
               </div>
 
-              {/* Skeleton batch while loading more */}
-              {loadingMore && (
-                <div className="products-grid-shop load-more-grid">
-                  {[...Array(Math.min(PAGE_SIZE, sortedPosts.length - visiblePosts.length))].map((_, i) => (
-                    <div key={i} className="skeleton" style={{ height: 320, borderRadius: 20 }} />
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <button
+                    className="page-btn"
+                    onClick={() => setPage(p => p - 1)}
+                    disabled={page === 1}
+                  >
+                    ‹
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+                    <button
+                      key={n}
+                      className={`page-btn ${n === page ? 'active' : ''}`}
+                      onClick={() => setPage(n)}
+                    >
+                      {n}
+                    </button>
                   ))}
-                </div>
-              )}
 
-              {/* Sentinel for IntersectionObserver */}
-              {hasMore && !loadingMore && (
-                <div ref={sentinelRef} className="scroll-sentinel" aria-hidden="true" />
-              )}
-
-              {/* End of list */}
-              {!hasMore && sortedPosts.length > PAGE_SIZE && (
-                <div className="scroll-end">
-                  <span className="scroll-end-line" />
-                  <span className="scroll-end-text">Has visto todos los productos</span>
-                  <span className="scroll-end-line" />
+                  <button
+                    className="page-btn"
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={page === totalPages}
+                  >
+                    ›
+                  </button>
                 </div>
               )}
             </>
