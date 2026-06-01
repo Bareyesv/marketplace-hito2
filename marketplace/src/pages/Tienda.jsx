@@ -1,28 +1,57 @@
-import { useEffect, useState } from 'react'
-import { FiFilter, FiX, FiGrid, FiList } from 'react-icons/fi'
+import { useEffect, useRef, useState, useMemo } from 'react'
+import { FiFilter, FiX } from 'react-icons/fi'
 import { useApp, ACTIONS } from '../context/AppContext'
 import { useProducts } from '../hooks/useMarketplace'
 import ProductCard from '../components/products/ProductCard'
 import './Tienda.css'
 
-function formatPrice(price) {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(price)
-}
+const PAGE_SIZE = 8
 
 export default function Tienda() {
   const { state, dispatch } = useApp()
   const { posts, loading } = useProducts()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [perPage, setPerPage] = useState(8)
   const [sortBy, setSortBy] = useState('recent')
+  const [page, setPage] = useState(1)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const sentinelRef = useRef(null)
 
-  const visiblePosts = [...posts]
-    .sort((a, b) => {
+  const sortedPosts = useMemo(() => (
+    [...posts].sort((a, b) => {
       if (sortBy === 'price-asc') return a.precio - b.precio
       if (sortBy === 'price-desc') return b.precio - a.precio
       return b.id - a.id
     })
-    .slice(0, perPage)
+  ), [posts, sortBy])
+
+  const visiblePosts = sortedPosts.slice(0, page * PAGE_SIZE)
+  const hasMore = visiblePosts.length < sortedPosts.length
+
+  // Reset to page 1 when filters or sort change
+  useEffect(() => { setPage(1) }, [posts, sortBy])
+
+  // IntersectionObserver — load next batch when sentinel enters viewport
+  useEffect(() => {
+    if (!hasMore || loading) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loadingMore) {
+          setLoadingMore(true)
+          // Small delay so skeletons are visible — simulates async fetch
+          setTimeout(() => {
+            setPage(p => p + 1)
+            setLoadingMore(false)
+          }, 500)
+        }
+      },
+      { rootMargin: '150px' }
+    )
+
+    const el = sentinelRef.current
+    if (el) observer.observe(el)
+    return () => { if (el) observer.unobserve(el) }
+  }, [hasMore, loading, loadingMore])
 
   const clearFilters = () => {
     dispatch({ type: ACTIONS.SET_CATEGORY, payload: null })
@@ -73,7 +102,6 @@ export default function Tienda() {
             </button>
           )}
 
-          {/* Categories */}
           <div className="filter-section">
             <h4 className="filter-title">Categorías</h4>
             <div className="filter-options">
@@ -94,22 +122,6 @@ export default function Tienda() {
               ))}
             </div>
           </div>
-
-          {/* Items per page */}
-          <div className="filter-section">
-            <h4 className="filter-title">Productos por página</h4>
-            <div className="per-page-options">
-              {[4, 8, 12, 16].map(n => (
-                <button
-                  key={n}
-                  className={`per-page-btn ${perPage === n ? 'active' : ''}`}
-                  onClick={() => setPerPage(n)}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
-          </div>
         </aside>
 
         {/* Sidebar overlay */}
@@ -119,7 +131,7 @@ export default function Tienda() {
         <div className="tienda-products">
           {loading ? (
             <div className="products-grid-shop">
-              {[...Array(8)].map((_, i) => (
+              {[...Array(PAGE_SIZE)].map((_, i) => (
                 <div key={i} className="skeleton" style={{ height: 320, borderRadius: 20 }} />
               ))}
             </div>
@@ -137,18 +149,31 @@ export default function Tienda() {
                   <ProductCard
                     key={post.id}
                     post={post}
-                    style={{ animationDelay: `${i * 0.05}s` }}
+                    style={{ animationDelay: `${(i % PAGE_SIZE) * 0.05}s` }}
                   />
                 ))}
               </div>
-              {posts.length > perPage && (
-                <div className="load-more">
-                  <button
-                    className="btn btn--outline btn--md"
-                    onClick={() => setPerPage(p => p + 8)}
-                  >
-                    Ver más productos
-                  </button>
+
+              {/* Skeleton batch while loading more */}
+              {loadingMore && (
+                <div className="products-grid-shop load-more-grid">
+                  {[...Array(Math.min(PAGE_SIZE, sortedPosts.length - visiblePosts.length))].map((_, i) => (
+                    <div key={i} className="skeleton" style={{ height: 320, borderRadius: 20 }} />
+                  ))}
+                </div>
+              )}
+
+              {/* Sentinel for IntersectionObserver */}
+              {hasMore && !loadingMore && (
+                <div ref={sentinelRef} className="scroll-sentinel" aria-hidden="true" />
+              )}
+
+              {/* End of list */}
+              {!hasMore && sortedPosts.length > PAGE_SIZE && (
+                <div className="scroll-end">
+                  <span className="scroll-end-line" />
+                  <span className="scroll-end-text">Has visto todos los productos</span>
+                  <span className="scroll-end-line" />
                 </div>
               )}
             </>
