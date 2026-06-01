@@ -37,6 +37,7 @@ export const ACTIONS = {
   CLEAR_CART: 'CLEAR_CART',
   UPDATE_POST: 'UPDATE_POST',
   DELETE_POST: 'DELETE_POST',
+  UPDATE_USER: 'UPDATE_USER',
 }
 
 // =====================
@@ -119,6 +120,8 @@ function appReducer(state, action) {
       }
     case ACTIONS.DELETE_POST:
       return { ...state, posts: state.posts.filter(p => p.id !== action.payload) }
+    case ACTIONS.UPDATE_USER:
+      return { ...state, user: { ...state.user, ...action.payload } }
     default:
       return state
   }

@@ -1,0 +1,135 @@
+.edit-profile {
+  max-width: 600px;
+}
+
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* Avatar preview */
+.avatar-preview-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, rgba(200,169,110,0.06) 0%, transparent 100%);
+}
+
+.avatar-preview {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.avatar-preview-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+/* Sections */
+.edit-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.edit-section-title {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.optional-label {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text-3);
+  background: var(--color-bg-card-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  letter-spacing: 0.3px;
+}
+
+.edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Password toggle button */
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  color: var(--color-text-3);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+}
+.password-toggle:hover:not(:disabled) { color: var(--color-text); }
+.password-toggle:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* The input-wrap needs relative positioning for the toggle */
+.input-wrap {
+  position: relative;
+}
+.input-wrap .input-field {
+  padding-right: 40px;
+}
+
+/* Actions */
+.edit-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding-top: var(--space-sm);
+}
+
+.edit-reset-btn {
+  background: none;
+  color: var(--color-text-3);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.edit-reset-btn:hover:not(:disabled) { color: var(--color-text); }
+.edit-reset-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+  .edit-actions { flex-direction: column; align-items: flex-start; }
+}

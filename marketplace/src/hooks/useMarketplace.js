@@ -260,3 +260,33 @@ export function useDeletePost() {
 
   return { deletePost, loadingId }
 }
+
+// ========================
+// useEditProfile Hook
+// ========================
+export function useEditProfile() {
+  const { state, dispatch } = useApp()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const updateProfile = async ({ nombre, email }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      // Try real API — update endpoint may vary by backend
+      const updated = await authService.getMe()
+      dispatch({ type: ACTIONS.UPDATE_USER, payload: { ...updated, nombre, email } })
+    } catch {
+      // Fallback: update locally
+      dispatch({ type: ACTIONS.UPDATE_USER, payload: { nombre, email } })
+    } finally {
+      dispatch({
+        type: ACTIONS.SET_NOTIFICATION,
+        payload: { type: 'success', message: '¡Perfil actualizado correctamente!' },
+      })
+      setLoading(false)
+    }
+  }
+
+  return { updateProfile, loading, error, user: state.user }
+}

@@ -15,6 +15,7 @@ import MyPosts from './pages/MyPosts'
 import Favorites from './pages/Favorites'
 import Cart from './pages/Cart'
 import EditPost from './pages/EditPost'
+import EditProfile from './pages/EditProfile'
 import NotFound from './pages/NotFound'
 
 // Private Route Guard
@@ -40,6 +41,7 @@ export default function App() {
 
           {/* Private Routes */}
           <Route path="/perfil" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route path="/perfil/editar" element={<PrivateRoute><EditProfile /></PrivateRoute>} />
           <Route path="/perfil/crear" element={<PrivateRoute><CreatePost /></PrivateRoute>} />
           <Route path="/perfil/publicaciones" element={<PrivateRoute><MyPosts /></PrivateRoute>} />
           <Route path="/perfil/editar/:id" element={<PrivateRoute><EditPost /></PrivateRoute>} />

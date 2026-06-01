@@ -1,11 +1,12 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { FiUser, FiPlusSquare, FiList, FiHeart, FiLogOut, FiMail } from 'react-icons/fi'
+import { FiUser, FiPlusSquare, FiList, FiHeart, FiLogOut, FiMail, FiEdit } from 'react-icons/fi'
 import { useApp } from '../context/AppContext'
 import { useAuth } from '../hooks/useMarketplace'
 import './Profile.css'
 
 const NAV_ITEMS = [
   { to: '/perfil', label: 'Mi Perfil', icon: <FiUser />, end: true },
+  { to: '/perfil/editar', label: 'Editar Perfil', icon: <FiEdit /> },
   { to: '/perfil/crear', label: 'Crear Publicación', icon: <FiPlusSquare /> },
   { to: '/perfil/publicaciones', label: 'Mis Publicaciones', icon: <FiList /> },
   { to: '/perfil/favoritos', label: 'Mis Favoritos', icon: <FiHeart /> },
@@ -69,7 +70,13 @@ function ProfileHome() {
 
   return (
     <div className="profile-home">
-      <h1 className="profile-page-title">Mi Perfil</h1>
+      <div className="profile-home-header">
+        <h1 className="profile-page-title">Mi Perfil</h1>
+        <Link to="/perfil/editar" className="btn btn--outline btn--sm profile-edit-btn">
+          <FiEdit /> Editar perfil
+        </Link>
+      </div>
+
       <div className="profile-info-card">
         <div className="profile-info-row">
           <span className="profile-info-label">Nombre</span>
@@ -90,6 +97,9 @@ function ProfileHome() {
       </div>
 
       <div className="profile-quick-actions">
+        <Link to="/perfil/editar" className="quick-action">
+          <FiEdit /> <span>Editar Perfil</span>
+        </Link>
         <Link to="/perfil/crear" className="quick-action">
           <FiPlusSquare /> <span>Nueva Publicación</span>
         </Link>
