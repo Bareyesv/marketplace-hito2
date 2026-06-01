@@ -1,0 +1,63 @@
+.notification {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  max-width: 380px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  border: 1px solid transparent;
+  animation: slideInRight 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.notification--success {
+  background: rgba(76, 175, 125, 0.12);
+  border-color: rgba(76, 175, 125, 0.3);
+  color: #4caf7d;
+}
+.notification--error {
+  background: rgba(232, 93, 117, 0.12);
+  border-color: rgba(232, 93, 117, 0.3);
+  color: var(--color-error);
+}
+.notification--warning {
+  background: rgba(245, 166, 35, 0.12);
+  border-color: rgba(245, 166, 35, 0.3);
+  color: var(--color-warning);
+}
+.notification--info {
+  background: rgba(124, 92, 191, 0.12);
+  border-color: rgba(124, 92, 191, 0.3);
+  color: #a07ee8;
+}
+
+.notif-icon { font-size: 1.2rem; flex-shrink: 0; }
+.notif-message { font-size: 0.88rem; font-weight: 500; flex: 1; }
+.notif-close {
+  background: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+}
+.notif-close:hover { opacity: 1; }
+
+@media (max-width: 480px) {
+  .notification {
+    bottom: var(--space-md);
+    right: var(--space-md);
+    left: var(--space-md);
+    max-width: 100%;
+  }
+}
